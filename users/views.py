@@ -86,5 +86,7 @@ def update(request):
     user = CustomUser.objects.get(id=request.user.id)
     if 'name' in request.data:
         user.name = request.data['name']
+    if 'image' in request.data:
+        user.image = request.data['image']
     user.save()
     return Response(CustomUserSerializer(user).data, status=status.HTTP_200_OK)

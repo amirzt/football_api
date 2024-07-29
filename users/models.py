@@ -23,6 +23,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100, null=True, blank=True)
     score = models.IntegerField(default=0)
     credit = models.IntegerField(default=0)
+    image = models.ImageField(upload_to='user/image/', default=None, null=True)
 
     is_visible = models.BooleanField(default=True)
     is_active = models.BooleanField(default=False)

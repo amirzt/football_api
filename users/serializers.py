@@ -19,7 +19,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['email', 'expire_date', 'name']
+        fields = ['email', 'expire_date', 'name', 'score', 'image']
 
 
 class AdmobSerializer(serializers.ModelSerializer):

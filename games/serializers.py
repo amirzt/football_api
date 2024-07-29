@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from games.models import League, Team, Bet, Match, FavouriteLeague
+from users.models import CustomUser
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -38,9 +39,11 @@ class LeagueSerializer(serializers.ModelSerializer):
     is_fav = serializers.SerializerMethodField('get_is_fav')
 
     def get_matches(self, data):
-        matches = Match.objects.filter(date=self.context.get('date'),
-                                       league=data)
-        return MatchSerializer(matches, many=True).data
+        # print(self.context.get('date'))
+        matches = Match.objects.filter(league=data,
+                                       date=self.context.get('date'))
+        return MatchSerializer(matches, many=True,
+                               context={"user": self.context.get('user')}).data
 
     def get_is_fav(self, data):
         fav = FavouriteLeague.objects.filter(user=self.context.get('user'),
@@ -58,9 +61,16 @@ class AddBetSerializer(serializers.ModelSerializer):
         fields = ['match', 'home_score', 'away_score']
 
     def save(self, **kwargs):
-        bet = Bet(match=self.validated_data['match'],
-                  home_score=self.validated_data['home_score'],
-                  away_score=self.validated_data['away_score'],
-                  user=self.context.get('user'))
-        bet.save()
+        try:
+            bet = Bet.objects.get(user=self.context.get('user'),
+                                  match=self.validated_data['match'])
+            bet.home_score = self.validated_data['home_score']
+            bet.away_score = self.validated_data['away_score']
+            bet.save()
+        except Bet.DoesNotExist:
+            bet = Bet(match=self.validated_data['match'],
+                      home_score=self.validated_data['home_score'],
+                      away_score=self.validated_data['away_score'],
+                      user=self.context.get('user'))
+            bet.save()
         return bet

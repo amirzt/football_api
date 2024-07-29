@@ -9,7 +9,8 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('email', 'expire_date', 'date_joint')
     search_fields = ('email__startswith', 'name__startswith')
     fields = (
-        'email', 'name', 'score', 'credit', 'is_visible', 'is_active', 'is_staff', 'app_type', 'version', 'expire_date')
+        'email', 'name', 'score', 'credit', 'image', 'is_visible', 'is_active', 'is_staff', 'app_type', 'version',
+        'expire_date')
 
 
 @admin.register(Admob)

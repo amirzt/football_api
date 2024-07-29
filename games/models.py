@@ -38,9 +38,10 @@ class Match(models.Model):
         canceled = 'canceled'
 
     league = models.ForeignKey(League, on_delete=models.CASCADE)
-    home = models.ForeignKey(Team, on_delete=models.CASCADE)
-    away = models.ForeignKey(Team, on_delete=models.CASCADE)
-    date = models.DateTimeField()
+    home = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home')
+    away = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away')
+    date = models.DateField()
+    time = models.TimeField(default='00:00')
     home_score = models.IntegerField(default=0)
     away_score = models.IntegerField(default=0)
     status = models.CharField(max_length=100, choices=MatchStatus.choices, default=MatchStatus.upcoming)

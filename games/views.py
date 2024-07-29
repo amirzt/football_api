@@ -7,12 +7,14 @@ from games.models import League
 from games.serializers import LeagueSerializer, AddBetSerializer
 from users.models import CustomUser
 from users.serializers import CustomUserSerializer
+from django.db.models import Q
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_league(request):
-    leagues = League.objects.all()
+    leagues = League.objects.filter(Q(match__date=request.data['date'])).distinct()
+    leagues.filter(active=True)
     serializer = LeagueSerializer(leagues, many=True,
                                   context={"user": CustomUser.objects.get(id=request.user.id),
                                            "date": request.data['date']})
