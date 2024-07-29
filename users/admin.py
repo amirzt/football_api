@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from users.models import CustomUser, Admob, CustomAd
+from users.models import CustomUser, Admob, CustomAd, Lottery
 
 
 @admin.register(CustomUser)
@@ -24,7 +24,7 @@ class CustomAdAdmin(admin.ModelAdmin):
     fields = ('name', 'banner', 'link', 'active')
 
 
-@admin.register(CustomAd)
+@admin.register(Lottery)
 class LotteryAdmin(admin.ModelAdmin):
     list_display = ('fa_title', 'active', 'price')
     fields = ('fa_title', 'fa_description', 'en_title', 'en_description', 'active', 'price')

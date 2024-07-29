@@ -13,7 +13,7 @@ from users.serializers import RegistrationSerializer, CustomUserSerializer, Admo
 @permission_classes([AllowAny])
 def login(request):
     try:
-        user = CustomUser.objects.get(phone=request.data['phone'])
+        user = CustomUser.objects.get(email=request.data['email'])
 
         if user.check_password(request.POST.get('password')):
             user.is_active = True
@@ -77,4 +77,14 @@ def splash(request):
 @permission_classes([IsAuthenticated])
 def get_user(request):
     user = CustomUser.objects.get(id=request.user.id)
+    return Response(CustomUserSerializer(user).data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update(request):
+    user = CustomUser.objects.get(id=request.user.id)
+    if 'name' in request.data:
+        user.name = request.data['name']
+    user.save()
     return Response(CustomUserSerializer(user).data, status=status.HTTP_200_OK)
