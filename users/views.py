@@ -59,7 +59,7 @@ def login(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def splash(request):
     admob = Admob.objects.filter(active=True)
     customs = CustomAd.objects.filter(active=True)

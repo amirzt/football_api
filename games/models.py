@@ -74,3 +74,27 @@ class Bet(models.Model):
 
     class Meta:
         unique_together = ('match', 'user')
+
+
+class RankingGroup(models.Model):
+    name = models.CharField(max_length=100, null=False, blank=False)
+    username = models.CharField(max_length=100, null=False, blank=False, unique=True)
+    description = models.TextField(max_length=1000, null=True, blank=True)
+    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+class GroupMember(models.Model):
+    group = models.ForeignKey(RankingGroup, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('group', 'user')

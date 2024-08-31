@@ -3,16 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a33d1135-4ded-4c93-843a-aef94982b21f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/football/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/football/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/football/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/football/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/games/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/games/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/games/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/games/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/users/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +77,9 @@
       <updated>1722165831515</updated>
       <workItem from="1722165857205" duration="76000" />
       <workItem from="1722165941467" duration="6049000" />
-      <workItem from="1722230093620" duration="2512000" />
+      <workItem from="1722230093620" duration="3320000" />
+      <workItem from="1722748285136" duration="8000" />
+      <workItem from="1725097290584" duration="411000" />
     </task>
     <servers />
   </component>

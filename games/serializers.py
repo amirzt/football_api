@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from games.models import League, Team, Bet, Match, FavouriteLeague
+from games.models import League, Team, Bet, Match, FavouriteLeague, RankingGroup
 from users.models import CustomUser
 
 
@@ -74,3 +74,9 @@ class AddBetSerializer(serializers.ModelSerializer):
                       user=self.context.get('user'))
             bet.save()
         return bet
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RankingGroup
+        fields = '__all__'

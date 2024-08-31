@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import serializers
 
 from users.models import CustomUser, Admob, CustomAd, Lottery
@@ -17,9 +19,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    expired = serializers.SerializerMethodField('get_expired')
+
+    def get_expired(self, obj):
+        return obj.expire_date < datetime.now()
+
     class Meta:
         model = CustomUser
-        fields = ['email', 'expire_date', 'name', 'score', 'image']
+        fields = ['email', 'expire_date', 'name', 'score', 'image', 'expired']
 
 
 class AdmobSerializer(serializers.ModelSerializer):

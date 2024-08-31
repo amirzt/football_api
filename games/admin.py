@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from games.models import League, Team, Match, Bet
+from games.models import League, Team, Match, Bet, RankingGroup
 
 
 @admin.register(League)
@@ -32,3 +32,10 @@ class BetAdmin(admin.ModelAdmin):
     list_display = ('match', 'user', 'created_at', 'updated_at')
     search_fields = ('name__startswith',)
     fields = ('match', 'user', 'home_score', 'away_score', 'score')
+
+
+@admin.register(RankingGroup)
+class BetAdmin(admin.ModelAdmin):
+    list_display = ('name', 'username', 'description', 'creator', 'created_at', 'updated_at')
+    search_fields = ('name__startswith',)
+    fields = ('name', 'username', 'description', 'creator', 'created_at', 'updated_at')
