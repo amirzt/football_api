@@ -11,6 +11,8 @@ from games.serializers import LeagueSerializer, AddBetSerializer, GroupSerialize
 from users.models import CustomUser
 from users.serializers import CustomUserSerializer
 from django.db.models import Q
+from django.db.models import F, Window
+from django.db.models.functions import RowNumber
 
 
 @api_view(['POST'])
@@ -44,8 +46,19 @@ def get_ranking(request):
         users = CustomUser.objects.filter(groupmember__group=group).order_by('-score')
     else:
         users = CustomUser.objects.all().order_by('-score')
+
+    ranked_users = users.annotate(
+        rank=Window(
+            expression=RowNumber(),
+            order_by=F('score').desc()
+        )
+    )
+
     serializer = CustomUserSerializer(users, many=True)
-    return Response(serializer.data)
+    return Response({
+        "data": serializer.data,
+        "your_ranking": ranked_users.get(id=request.user.id).rank
+    })
 
 
 @api_view(['POST'])
@@ -72,3 +85,31 @@ def create_group(request):
         member = GroupMember(user=user, group=group)
         member.save()
         return Response(status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def join_group(request):
+    user = CustomUser.objects.get(id=request.user.id)
+    try:
+        group = RankingGroup.objects.get(username=request.data['username'])
+
+        member = GroupMember(user=user, group=group)
+        member.save()
+        return Response(status=status.HTTP_200_OK)
+    except RankingGroup.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def leave_group(request):
+    user = CustomUser.objects.get(id=request.user.id)
+    try:
+        group = RankingGroup.objects.get(id=request.data['id'])
+
+        member = GroupMember.objects.get(user=user, group=group)
+        member.delete()
+        return Response(status=status.HTTP_200_OK)
+    except RankingGroup.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
