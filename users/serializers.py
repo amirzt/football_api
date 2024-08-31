@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.utils import timezone
 from rest_framework import serializers
 
 from users.models import CustomUser, Admob, CustomAd, Lottery
@@ -22,7 +23,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     expired = serializers.SerializerMethodField('get_expired')
 
     def get_expired(self, obj):
-        return obj.expire_date < datetime.now()
+        return obj.expire_date < timezone.now()
 
     class Meta:
         model = CustomUser
