@@ -5,5 +5,7 @@ urlpatterns = [
     path('get_league/', views.get_league),
     path('bet/', views.bet),
     path('get_ranking/', views.get_ranking),
+    path('get_groups/', views.get_groups),
+    path('create_group/', views.create_group),
 
 ]
