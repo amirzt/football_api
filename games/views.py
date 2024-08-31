@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -60,7 +62,7 @@ def get_groups(request):
 def create_group(request):
     user = CustomUser.objects.get(id=request.user.id)
 
-    if user.expire_date < timezone.now():
+    if user.expire_date < datetime.datetime.now():
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"message": "Your subscription has expired."})
     else:
         group = RankingGroup(name=request.data['name'],

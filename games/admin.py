@@ -38,4 +38,4 @@ class BetAdmin(admin.ModelAdmin):
 class BetAdmin(admin.ModelAdmin):
     list_display = ('name', 'username', 'description', 'creator', 'created_at', 'updated_at')
     search_fields = ('name__startswith',)
-    fields = ('name', 'username', 'description', 'creator', 'created_at', 'updated_at')
+    fields = ('name', 'username', 'description', 'creator',)
