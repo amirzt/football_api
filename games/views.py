@@ -62,13 +62,21 @@ def get_groups(request):
 def create_group(request):
     user = CustomUser.objects.get(id=request.user.id)
 
-    if user.expire_date < datetime.datetime.now():
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={"message": "Your subscription has expired."})
-    else:
-        group = RankingGroup(name=request.data['name'],
-                             username=request.data['username'],
-                             creator=user)
-        group.save()
-        member = GroupMember(user=user, group=group)
-        member.save()
-        return Response(status=status.HTTP_200_OK)
+    group = RankingGroup(name=request.data['name'],
+                         username=request.data['username'],
+                         creator=user)
+    group.save()
+    member = GroupMember(user=user, group=group)
+    member.save()
+    return Response(status=status.HTTP_200_OK)
+
+    # if user.expire_date < datetime.datetime.now():
+    #     return Response(status=status.HTTP_400_BAD_REQUEST, data={"message": "Your subscription has expired."})
+    # else:
+    #     group = RankingGroup(name=request.data['name'],
+    #                          username=request.data['username'],
+    #                          creator=user)
+    #     group.save()
+    #     member = GroupMember(user=user, group=group)
+    #     member.save()
+    #     return Response(status=status.HTTP_200_OK)
