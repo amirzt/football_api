@@ -1,12 +1,13 @@
 import datetime
 
+import requests
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from games.models import League, RankingGroup, GroupMember
+from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey
 from games.serializers import LeagueSerializer, AddBetSerializer, GroupSerializer
 from users.models import CustomUser
 from users.serializers import CustomUserSerializer
@@ -14,12 +15,70 @@ from django.db.models import Q
 from django.db.models import F, Window
 from django.db.models.functions import RowNumber
 
+football_api_url = "https://apiv3.apifootball.com/"
+
+
+def send_football_api(params):
+    try:
+        response = requests.get(football_api_url, params=params)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        teams_data = response.json()
+
+        return teams_data
+
+    except requests.RequestException as e:
+        return {}
+
+
+def get_matches(league, date):
+    params = {
+        "action": "get_events",
+        "APIkey": FootballApiKey.objects.all().last().token,
+        "league_id": league,
+        "from": date,
+        "to": date
+    }
+
+    data = send_football_api(params)
+    # print(data)
+    message = 'start'
+    for match in data:
+        # print(match)
+        game = Match.objects.filter(code=match['match_id'])
+        if game.count() > 0:
+            game = Match.objects.get(code=match['match_id'])
+            game.home_score = int(0) if (match['match_hometeam_score']) == "" else int(match['match_hometeam_score'])
+            game.away_score = int(0) if (match['match_awayteam_score']) == "" else int(match['match_awayteam_score'])
+            game.save()
+            message = 'Success'
+        else:
+            game, created = Match.objects.update_or_create(
+                code=match['match_id'],
+                league=League.objects.get(code=league),
+                home=Team.objects.get(code=match['match_hometeam_id']),
+                away=Team.objects.get(code=match['match_awayteam_id']),
+                home_score=0 if match['match_hometeam_score'] == "" else match['match_hometeam_score'],
+                away_score=0 if match['match_awayteam_score'] == "" else match['match_awayteam_score'],
+                date=match['match_date'],
+                time=match['match_time'],
+            )
+            if created:
+                message = 'Success'
+            else:
+                message = 'Fail'
+
+    return Response(data={"message": message})
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_league(request):
-    leagues = League.objects.filter(Q(match__date=request.data['date'])).distinct()
-    leagues.filter(active=True)
+    leagues = League.objects.filter(active=True)
+
+    for league in leagues:
+        get_matches(league.code, request.data['date'])
+
+    leagues = leagues.filter(Q(match__date=request.data['date'])).distinct()
     serializer = LeagueSerializer(leagues, many=True,
                                   context={"user": CustomUser.objects.get(id=request.user.id),
                                            "date": request.data['date']})
@@ -113,3 +172,59 @@ def leave_group(request):
         return Response(status=status.HTTP_200_OK)
     except RankingGroup.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_team(request):
+    params = {
+        "action": "get_teams",
+        "APIkey": FootballApiKey.objects.all().last().token,
+        "league_id": request.data['league']
+    }
+
+    teams_data = send_football_api(params)
+    message = 'start'
+    for team_data in teams_data:
+        team, created = Team.objects.update_or_create(
+            code=team_data['team_key'],
+            name=team_data['team_name'],
+            logo=team_data['team_badge']
+        )
+        if created:
+            message = 'Success'
+        else:
+            message = 'Fail'
+    return Response(data={"message": message})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_match(request):
+    league = League.objects.get(code=request.data['league'])
+
+    params = {
+        "action": "get_events",
+        "APIkey": FootballApiKey.objects.all().last().token,
+        "league_id": request.data['league'],
+        "from": '2024-09-01',
+        "to": '2024-09-01'
+    }
+
+    data = send_football_api(params)
+    # print(data)
+    message = 'start'
+    for match in data:
+        print(match)
+        game, created = Match.objects.update_or_create(
+            league=league,
+            home=Team.objects.get(code=match['match_hometeam_id']),
+            away=Team.objects.get(code=match['match_awayteam_id']),
+            date=match['match_date'],
+            time=match['match_time'],
+        )
+        if created:
+            message = 'Success'
+        else:
+            message = 'Fail'
+    return Response(data={"message": message})

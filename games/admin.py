@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from games.models import League, Team, Match, Bet, RankingGroup
+from games.models import League, Team, Match, Bet, RankingGroup, FootballApiKey
 
 
 @admin.register(League)
@@ -21,7 +21,7 @@ class TeamAdmin(admin.ModelAdmin):
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
     list_display = (
-        'league', 'home', 'away', 'date', 'time', 'home_score', 'away_score', 'status', 'description', 'created_at',
+        'league', 'code', 'home', 'away', 'date', 'time', 'home_score', 'away_score', 'status', 'description', 'created_at',
         'updated_at')
     fields = (
         'league', 'home', 'away', 'date', 'time', 'home_score', 'away_score', 'status', 'description')
@@ -39,3 +39,6 @@ class BetAdmin(admin.ModelAdmin):
     list_display = ('name', 'username', 'description', 'creator', 'created_at', 'updated_at')
     search_fields = ('name__startswith',)
     fields = ('name', 'username', 'description', 'creator',)
+
+
+admin.site.register(FootballApiKey)

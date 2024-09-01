@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a33d1135-4ded-4c93-843a-aef94982b21f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/games/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/games/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/games/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/games/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/views.py" afterDir="false" />
     </list>
@@ -86,6 +89,8 @@
       <workItem from="1725105514625" duration="57000" />
       <workItem from="1725105594873" duration="81000" />
       <workItem from="1725110393966" duration="603000" />
+      <workItem from="1725112805424" duration="36000" />
+      <workItem from="1725167622852" duration="4175000" />
     </task>
     <servers />
   </component>

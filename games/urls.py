@@ -9,5 +9,7 @@ urlpatterns = [
     path('create_group/', views.create_group),
     path('join_group/', views.join_group),
     path('leave_group/', views.leave_group),
+    path('add_team/', views.add_team),
+    path('add_match/', views.add_match),
 
 ]

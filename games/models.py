@@ -46,6 +46,7 @@ class Match(models.Model):
     away_score = models.IntegerField(default=0)
     status = models.CharField(max_length=100, choices=MatchStatus.choices, default=MatchStatus.upcoming)
     description = models.TextField(max_length=1000, null=True, blank=True)
+    code = models.CharField(max_length=100, null=True, blank=True, default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -98,3 +99,7 @@ class GroupMember(models.Model):
 
     class Meta:
         unique_together = ('group', 'user')
+
+
+class FootballApiKey(models.Model):
+    token = models.CharField(max_length=500, null=False, blank=False)
