@@ -19,7 +19,7 @@ class League(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
-    logo = models.ImageField(upload_to='team/logo/', null=False, blank=False)
+    logo = models.CharField(max_length=1000, null=True, blank=True, default=None)
     code = models.CharField(max_length=100, null=False, blank=False, unique=True)
     description = models.TextField(max_length=1000, null=True, blank=True)
 

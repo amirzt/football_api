@@ -42,30 +42,33 @@ def get_matches(league, date):
     data = send_football_api(params)
     # print(data)
     message = 'start'
-    for match in data:
-        # print(match)
-        game = Match.objects.filter(code=match['match_id'])
-        if game.count() > 0:
-            game = Match.objects.get(code=match['match_id'])
-            game.home_score = int(0) if (match['match_hometeam_score']) == "" else int(match['match_hometeam_score'])
-            game.away_score = int(0) if (match['match_awayteam_score']) == "" else int(match['match_awayteam_score'])
-            game.save()
-            message = 'Success'
-        else:
-            game, created = Match.objects.update_or_create(
-                code=match['match_id'],
-                league=League.objects.get(code=league),
-                home=Team.objects.get(code=match['match_hometeam_id']),
-                away=Team.objects.get(code=match['match_awayteam_id']),
-                home_score=0 if match['match_hometeam_score'] == "" else match['match_hometeam_score'],
-                away_score=0 if match['match_awayteam_score'] == "" else match['match_awayteam_score'],
-                date=match['match_date'],
-                time=match['match_time'],
-            )
-            if created:
+    if 'error' not in data:
+        for match in data:
+            # print(match)
+            game = Match.objects.filter(code=match['match_id'])
+            if game.count() > 0:
+                game = Match.objects.get(code=match['match_id'])
+                game.home_score = int(0) if (match['match_hometeam_score']) == "" else int(
+                    match['match_hometeam_score'])
+                game.away_score = int(0) if (match['match_awayteam_score']) == "" else int(
+                    match['match_awayteam_score'])
+                game.save()
                 message = 'Success'
             else:
-                message = 'Fail'
+                game, created = Match.objects.update_or_create(
+                    code=match['match_id'],
+                    league=League.objects.get(code=league),
+                    home=Team.objects.get(code=match['match_hometeam_id']),
+                    away=Team.objects.get(code=match['match_awayteam_id']),
+                    home_score=0 if match['match_hometeam_score'] == "" else match['match_hometeam_score'],
+                    away_score=0 if match['match_awayteam_score'] == "" else match['match_awayteam_score'],
+                    date=match['match_date'],
+                    time=match['match_time'],
+                )
+                if created:
+                    message = 'Success'
+                else:
+                    message = 'Fail'
 
     return Response(data={"message": message})
 
