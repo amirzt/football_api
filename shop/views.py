@@ -187,7 +187,8 @@ def lottery(request):
 
     except LotteryChance.DoesNotExist:
         lo = LotteryChance(user=user,
-                           date=datetime.datetime.today())
+                           date=datetime.datetime.today(),
+                           state=LotteryChance.StateChoices.SUCCESS)
         lo.save()
         return Response(status=status.HTTP_200_OK)
 

@@ -36,6 +36,7 @@ class Match(models.Model):
         playing = 'playing'
         finished = 'finished'
         canceled = 'canceled'
+        halfTime = 'halftime'
 
     league = models.ForeignKey(League, on_delete=models.CASCADE)
     home = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home')
@@ -44,7 +45,7 @@ class Match(models.Model):
     time = models.TimeField(default='00:00')
     home_score = models.IntegerField(default=0)
     away_score = models.IntegerField(default=0)
-    status = models.CharField(max_length=100, choices=MatchStatus.choices, default=MatchStatus.upcoming)
+    status = models.CharField(max_length=100, default=MatchStatus.upcoming)
     description = models.TextField(max_length=1000, null=True, blank=True)
     code = models.CharField(max_length=100, null=True, blank=True, default=None)
 

@@ -32,14 +32,15 @@ def send_football_api(params):
 
 
 def get_status(param):
-    games_status = Match.MatchStatus.upcoming
     if param == 'Finished':
         return Match.MatchStatus.finished
 
-    elif param == 'playing':
-        return Match.MatchStatus.playing
-
-    return games_status
+    elif param == 'Half time':
+        return Match.MatchStatus.halfTime
+    elif param == '':
+        return Match.MatchStatus.upcoming
+    else:
+        return param
 
 
 def get_matches(league, date):
