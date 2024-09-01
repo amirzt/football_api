@@ -48,6 +48,11 @@ class Match(models.Model):
     description = models.TextField(max_length=1000, null=True, blank=True)
     code = models.CharField(max_length=100, null=True, blank=True, default=None)
 
+    # extra information
+    stadium = models.CharField(max_length=500, default='', null=True, blank=True)
+    referee = models.CharField(max_length=500, default='', null=True, blank=True)
+    league_round = models.CharField(max_length=500, default='', null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

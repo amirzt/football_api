@@ -7,5 +7,6 @@ urlpatterns = [
     path('get_zarinpal_url/', views.get_zarinpal_url),
     path('send_request/', views.send_request),
     path('verify/', views.verify),
+    path('lottery/', views.lottery),
 
 ]

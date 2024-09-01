@@ -14,6 +14,7 @@ from users.serializers import CustomUserSerializer
 from django.db.models import Q
 from django.db.models import F, Window
 from django.db.models.functions import RowNumber
+from django.core.files.temp import NamedTemporaryFile
 
 football_api_url = "https://apiv3.apifootball.com/"
 
@@ -28,6 +29,17 @@ def send_football_api(params):
 
     except requests.RequestException as e:
         return {}
+
+
+def get_status(param):
+    games_status = Match.MatchStatus.upcoming
+    if param == 'Finished':
+        return Match.MatchStatus.finished
+
+    elif param == 'playing':
+        return Match.MatchStatus.playing
+
+    return games_status
 
 
 def get_matches(league, date):
@@ -52,6 +64,10 @@ def get_matches(league, date):
                     match['match_hometeam_score'])
                 game.away_score = int(0) if (match['match_awayteam_score']) == "" else int(
                     match['match_awayteam_score'])
+                game.status = get_status(match['match_status'])
+                game.stadium = match['match_stadium']
+                game.referee = match['match_referee']
+                game.league_round = match['match_round']
                 game.save()
                 message = 'Success'
             else:
@@ -64,6 +80,11 @@ def get_matches(league, date):
                     away_score=0 if match['match_awayteam_score'] == "" else match['match_awayteam_score'],
                     date=match['match_date'],
                     time=match['match_time'],
+                    stadium=match['match_stadium'],
+                    referee=match['match_referee'],
+                    league_round=match['match_round'],
+                    status=get_status(match['match_status']),
+
                 )
                 if created:
                     message = 'Success'
@@ -189,6 +210,12 @@ def add_team(request):
     teams_data = send_football_api(params)
     message = 'start'
     for team_data in teams_data:
+        #
+        # # Save the image to a temporary file
+        # img_temp = NamedTemporaryFile(delete=True)
+        # img_temp.write(response.content)
+        # img_temp.flush()
+
         team, created = Team.objects.update_or_create(
             code=team_data['team_key'],
             name=team_data['team_name'],
@@ -231,3 +258,19 @@ def add_match(request):
         else:
             message = 'Fail'
     return Response(data={"message": message})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def export(request):
+    data = {}
+    leagues = League.objects.all()
+    teams = Team.objects.all()
+
+    for league in leagues:
+        data[league.name] = league.name
+
+    for team in teams:
+        data[team.name] = team.name
+
+    return Response(data=data)

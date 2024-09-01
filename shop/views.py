@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from shop.models import Plan, ZarinpalCode, Transaction
+from shop.models import Plan, ZarinpalCode, Transaction, LotteryChance
 from shop.serializers import PlanSerializer, AddTransactionSerializer, TransactionSerializer
 from users.models import CustomUser
 
@@ -164,4 +164,30 @@ def verify(request):
             # return HttpResponse(f"Error code: {e_code}, Error Message: {e_message}")
     else:
         return render(request, 'error_payment.html')
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def lottery(request):
+    user = CustomUser.objects.get(id=request.user.id)
+    try:
+        lo = LotteryChance.objects.get(user=user,
+                                       date=datetime.datetime.today())
+        if lo.state == LotteryChance.StateChoices.PENDING or lo.state == LotteryChance.StateChoices.FAILED:
+            return Response(status=status.HTTP_402_PAYMENT_REQUIRED)
+        elif lo.state == LotteryChance.StateChoices.FINISHED:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        else:
+            lo.state = LotteryChance.StateChoices.FINISHED
+            lo.result = int(request.data['score'])
+            lo.save()
+            user.score = int(request.data['score']) + user.score
+            user.save()
+            return Response(status=status.HTTP_200_OK)
+
+    except LotteryChance.DoesNotExist:
+        lo = LotteryChance(user=user,
+                           date=datetime.datetime.today())
+        lo.save()
+        return Response(status=status.HTTP_200_OK)
 

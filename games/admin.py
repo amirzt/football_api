@@ -21,10 +21,12 @@ class TeamAdmin(admin.ModelAdmin):
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
     list_display = (
-        'league', 'code', 'home', 'away', 'date', 'time', 'home_score', 'away_score', 'status', 'description', 'created_at',
+        'league', 'code', 'home', 'away', 'date', 'time', 'home_score', 'away_score', 'status', 'description',
+        'created_at',
         'updated_at')
     fields = (
-        'league', 'home', 'away', 'date', 'time', 'home_score', 'away_score', 'status', 'description')
+        'league', 'home', 'away', 'date', 'time', 'home_score', 'away_score', 'status', 'description', 'stadium',
+        'referee', 'league_round')
 
 
 @admin.register(Bet)

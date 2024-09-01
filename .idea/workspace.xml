@@ -4,7 +4,14 @@
     <list default="true" id="a33d1135-4ded-4c93-843a-aef94982b21f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/games/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/games/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/games/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/games/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +94,8 @@
       <workItem from="1725105594873" duration="81000" />
       <workItem from="1725110393966" duration="603000" />
       <workItem from="1725112805424" duration="36000" />
-      <workItem from="1725167622852" duration="5315000" />
+      <workItem from="1725167622852" duration="5861000" />
+      <workItem from="1725179447805" duration="2347000" />
     </task>
     <servers />
   </component>

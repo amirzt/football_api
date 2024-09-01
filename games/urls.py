@@ -11,5 +11,6 @@ urlpatterns = [
     path('leave_group/', views.leave_group),
     path('add_team/', views.add_team),
     path('add_match/', views.add_match),
+    path('export/', views.export),
 
 ]

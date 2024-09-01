@@ -58,3 +58,20 @@ class Transaction(models.Model):
 
     def __str__(self):
         return self.user.email + ' - ' + self.plan.title
+
+
+class LotteryChance(models.Model):
+    class StateChoices(models.TextChoices):
+        PENDING = 'pending'
+        SUCCESS = 'success'
+        FAILED = 'failed'
+        FINISHED = 'finished'
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    state = models.CharField(max_length=255, choices=StateChoices.choices, default=StateChoices.PENDING)
+    date = models.DateField(auto_now_add=True)
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, default=None, null=True)
+    result = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
