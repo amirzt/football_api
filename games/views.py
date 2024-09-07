@@ -1,4 +1,5 @@
 import datetime
+import threading
 
 import requests
 from django.utils import timezone
@@ -9,6 +10,7 @@ from rest_framework.response import Response
 
 from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey
 from games.serializers import LeagueSerializer, AddBetSerializer, GroupSerializer
+from games.utils import calculate_score
 from users.models import CustomUser
 from users.serializers import CustomUserSerializer
 from django.db.models import Q
@@ -43,7 +45,7 @@ def get_status(param):
         return param
 
 
-def get_matches(league, date):
+def get_matches(league, date, user):
     params = {
         "action": "get_events",
         "APIkey": FootballApiKey.objects.all().last().token,
@@ -71,6 +73,16 @@ def get_matches(league, date):
                 game.league_round = match['match_round']
                 game.save()
                 message = 'Success'
+
+                if game.status == 'finished':
+                    data = {
+                        'id': game.id,
+                        'user': user
+                    }
+                    thread = threading.Thread(target=calculate_score,
+                                              args=[data])
+                    thread.setDaemon(True)
+                    thread.start()
             else:
                 game, created = Match.objects.update_or_create(
                     code=match['match_id'],
@@ -101,7 +113,7 @@ def get_league(request):
     leagues = League.objects.filter(active=True)
 
     for league in leagues:
-        get_matches(league.code, request.data['date'])
+        get_matches(league.code, request.data['date'], request.user.id)
 
     leagues = leagues.filter(Q(match__date=request.data['date'])).distinct()
     serializer = LeagueSerializer(leagues, many=True,
@@ -131,17 +143,12 @@ def get_ranking(request):
     else:
         users = CustomUser.objects.all().order_by('-score')
 
-    ranked_users = users.annotate(
-        rank=Window(
-            expression=RowNumber(),
-            order_by=F('score').desc()
-        )
-    )
+    user_index = next((index for index, user in enumerate(users) if user.id == request.user.id), None)
 
     serializer = CustomUserSerializer(users, many=True)
     return Response({
         "data": serializer.data,
-        "your_ranking": ranked_users.get(id=request.user.id).rank
+        "your_ranking": user_index + 1
     })
 
 
