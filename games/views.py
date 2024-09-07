@@ -5,7 +5,7 @@ import requests
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey
@@ -206,17 +206,8 @@ def leave_group(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def add_team(request):
-    params = {
-        "action": "get_teams",
-        "APIkey": FootballApiKey.objects.all().last().token,
-        "league_id": request.data['league']
-    }
-
+def get_teams_data(params):
     teams_data = send_football_api(params)
-    message = 'start'
     for team_data in teams_data:
         #
         # # Save the image to a temporary file
@@ -229,11 +220,36 @@ def add_team(request):
             name=team_data['team_name'],
             logo=team_data['team_badge']
         )
-        if created:
-            message = 'Success'
-        else:
-            message = 'Fail'
-    return Response(data={"message": message})
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def add_team(request):
+    params = {
+        "action": "get_teams",
+        "APIkey": FootballApiKey.objects.all().last().token,
+        "league_id": request.data['league']
+    }
+
+    thread = threading.Thread(target=get_teams_data,
+                              args=[params])
+    thread.setDaemon(True)
+    thread.start()
+    # teams_data = send_football_api(params)
+    # for team_data in teams_data:
+    #     #
+    #     # # Save the image to a temporary file
+    #     # img_temp = NamedTemporaryFile(delete=True)
+    #     # img_temp.write(response.content)
+    #     # img_temp.flush()
+    #
+    #     team, created = Team.objects.update_or_create(
+    #         code=team_data['team_key'],
+    #         name=team_data['team_name'],
+    #         logo=team_data['team_badge']
+    #     )
+
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
