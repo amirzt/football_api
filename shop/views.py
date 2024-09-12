@@ -283,10 +283,9 @@ def lottery_verify(request):
                 transaction.save()
 
                 # update expire date
-                lottery_chance = LotteryChance.objects.filter(transaction=transaction)
-                for chance in lottery_chance:
-                    chance.state = LotteryChance.StateChoices.SUCCESS
-                    chance.save()
+                lottery_chance = LotteryChance.objects.get(transaction=transaction)
+                lottery_chance.state = LotteryChance.StateChoices.SUCCESS
+                lottery_chance.save()
                 #
                 context = {
                     'tracking_code': transaction.tracking_code
