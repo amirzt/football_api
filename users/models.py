@@ -8,7 +8,7 @@ from users.managers import CustomUserManager
 
 def get_yesterday_date():
     from datetime import date, timedelta
-    return date.today() + timedelta(days=30)
+    return date.today() - timedelta(days=1)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):

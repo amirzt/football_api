@@ -284,7 +284,7 @@ def lottery_verify(request):
 
                 # update expire date
                 lottery_chance = LotteryChance.objects.get(transaction=transaction)
-                lottery_chance.state = 'success'
+                lottery_chance.state = LotteryChance.StateChoices.SUCCESS
                 lottery_chance.save()
                 #
                 context = {
