@@ -14,7 +14,7 @@ class ZarinpalCodeAdmin(admin.ModelAdmin):
 class PlanAdmin(admin.ModelAdmin):
     list_display = ('title',)
     search_fields = ('title__startswith',)
-    fields = ('title', 'description', 'price', 'is_available', 'duration', 'zarinpal_url')
+    fields = ('title', 'description', 'price', 'is_available', 'duration')
 
 
 @admin.register(Transaction)

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from shop.models import Plan, Transaction
+from shop.models import Plan, Transaction, LotteryChance
 
 
 class PlanSerializer(serializers.ModelSerializer):
@@ -31,3 +31,10 @@ class AddTransactionSerializer(serializers.ModelSerializer):
                                   description=self.context['description'])
         transaction.save()
         return transaction
+
+
+class GetLotteryChanceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LotteryChance
+        fields = '__all__'
