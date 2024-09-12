@@ -22,6 +22,7 @@ class Plan(models.Model):
     is_available = models.BooleanField(default=True)
     duration = models.IntegerField(null=False, blank=False)
     bazar_myket = models.CharField(max_length=100, default='', null=False)
+    zarinpal_url = models.URLField(max_length=1000, null=True, default=None)
     is_special = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)

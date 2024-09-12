@@ -85,6 +85,9 @@ def get_user(request):
 def update(request):
     user = CustomUser.objects.get(id=request.user.id)
     if 'name' in request.data:
+        users = CustomUser.objects.filter(name=request.data['name'])
+        if users.count() > 0:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         user.name = request.data['name']
     if 'image' in request.data:
         user.image = request.data['image']
