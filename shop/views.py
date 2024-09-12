@@ -205,7 +205,7 @@ def get_chances(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_lottery_url(request):
-    lottery_chance = LotteryChance(user_id=request.user.id, )
+    lottery_chance = LotteryChance(user_id=request.user.id)
     lottery_chance.save()
 
     serializer = AddTransactionSerializer(data=request.data,
@@ -284,7 +284,7 @@ def lottery_verify(request):
 
                 # update expire date
                 lottery_chance = LotteryChance.objects.get(transaction=transaction)
-                lottery_chance.state = LotteryChance.StateChoices.SUCCESS
+                lottery_chance.state = 'success'
                 lottery_chance.save()
                 #
                 context = {
