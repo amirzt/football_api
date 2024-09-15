@@ -12,5 +12,6 @@ urlpatterns = [
     path('add_team/', views.add_team),
     path('add_match/', views.add_match),
     path('export/', views.export),
+    path('run_schedule/', views.run_schedule),
 
 ]

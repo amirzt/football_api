@@ -1,4 +1,3 @@
-import datetime
 import threading
 
 import requests
@@ -8,15 +7,14 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey
+from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey, LeagueCheck
 from games.serializers import LeagueSerializer, AddBetSerializer, GroupSerializer
 from games.utils import calculate_score
 from users.models import CustomUser
 from users.serializers import CustomUserSerializer
-from django.db.models import Q
-from django.db.models import F, Window
-from django.db.models.functions import RowNumber
-from django.core.files.temp import NamedTemporaryFile
+from django.db.models import Q, OuterRef, Exists
+import schedule
+import time
 
 football_api_url = "https://apiv3.apifootball.com/"
 
@@ -57,7 +55,9 @@ def get_matches(league, date, user):
     data = send_football_api(params)
     # print(data)
     message = 'start'
+
     if 'error' not in data:
+
         for match in data:
             # print(match)
             game = Match.objects.filter(code=match['match_id'])
@@ -104,13 +104,26 @@ def get_matches(league, date, user):
                 else:
                     message = 'Fail'
 
+    elif data['error'] == 404:
+        league_check = LeagueCheck(league=League.objects.get(code=league),
+                                   date_field=date)
+        league_check.save()
+
     return Response(data={"message": message})
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_league(request):
-    leagues = League.objects.filter(active=True)
+    checks_for_date = LeagueCheck.objects.filter(
+        league=OuterRef('pk'),
+        date_field=request.data['date']
+    ).values('id')
+
+    leagues = League.objects.filter(~Exists(checks_for_date),
+                                    active=True)
+
+    # get_matches(18, request.data['date'], request.user.id)
 
     for league in leagues:
         get_matches(league.code, request.data['date'], request.user.id)
@@ -298,3 +311,17 @@ def export(request):
         data[team.name] = team.name
 
     return Response(data=data)
+
+
+def job():
+    print("I'm working...")
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def run_schedule(request):
+    schedule.every(1).minutes.do(job)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

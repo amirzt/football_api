@@ -17,6 +17,12 @@ class League(models.Model):
         return self.name
 
 
+class LeagueCheck(models.Model):
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
+    date_field = models.DateField(null=True, default=None)
+    created_date = models.DateField(auto_now_add=True)
+
+
 class Team(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
     logo = models.CharField(max_length=1000, null=True, blank=True, default=None)
@@ -77,7 +83,6 @@ class Bet(models.Model):
     away_score = models.IntegerField(default=0)
     score = models.IntegerField(default=0)
     is_calculated = models.BooleanField(default=False)
-
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
