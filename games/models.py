@@ -117,3 +117,10 @@ class GroupMember(models.Model):
 
 class FootballApiKey(models.Model):
     token = models.CharField(max_length=500, null=False, blank=False)
+
+
+class DateChecked(models.Model):
+    date = models.DateField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

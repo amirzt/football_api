@@ -1,3 +1,4 @@
+import datetime
 import threading
 
 import requests
@@ -7,7 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey, LeagueCheck
+from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey, LeagueCheck, DateChecked
 from games.serializers import LeagueSerializer, AddBetSerializer, GroupSerializer
 from games.utils import calculate_score
 from users.models import CustomUser
@@ -35,7 +36,7 @@ def get_status(param):
     if param == 'Finished':
         return Match.MatchStatus.finished
 
-    elif param == 'Half time':
+    elif param == 'Half Time':
         return Match.MatchStatus.halfTime
     elif param == '':
         return Match.MatchStatus.upcoming
@@ -43,7 +44,7 @@ def get_status(param):
         return param
 
 
-def get_matches(league, date, user):
+def get_matches(league, date):
     params = {
         "action": "get_events",
         "APIkey": FootballApiKey.objects.all().last().token,
@@ -74,15 +75,6 @@ def get_matches(league, date, user):
                 game.save()
                 message = 'Success'
 
-                if game.status == 'finished':
-                    data = {
-                        'id': game.id,
-                        'user': user
-                    }
-                    thread = threading.Thread(target=calculate_score,
-                                              args=[data])
-                    thread.setDaemon(True)
-                    thread.start()
             else:
                 game, created = Match.objects.update_or_create(
                     code=match['match_id'],
@@ -115,23 +107,53 @@ def get_matches(league, date, user):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_league(request):
-    checks_for_date = LeagueCheck.objects.filter(
-        league=OuterRef('pk'),
-        date_field=request.data['date']
-    ).values('id')
+    # checks_for_date = LeagueCheck.objects.filter(
+    #     league=OuterRef('pk'),
+    #     date_field=request.data['date']
+    # ).values('id')
 
-    leagues = League.objects.filter(~Exists(checks_for_date),
-                                    active=True)
+    user_date = datetime.datetime.strptime(request.data['date'], "%Y-%m-%d").date()
+    today = datetime.date.today()
+
+    if user_date != today:
+        check_date = DateChecked.objects.filter(date=user_date)
+        if check_date.count() == 0:
+            checks_for_date = LeagueCheck.objects.filter(
+                league=OuterRef('pk'),
+                date_field=request.data['date']
+            ).values('id')
+            # leagues = League.objects.filter(active=True)
+            leagues = League.objects.filter(~Exists(checks_for_date),
+                                            active=True)
+
+            # get_matches(18, request.data['date'], request.user.id)
+
+            for league in leagues:
+                get_matches(league.code, user_date)
+            cd = DateChecked(date=user_date)
+            cd.save()
+
+    leagues = League.objects.filter(active=True)
 
     # get_matches(18, request.data['date'], request.user.id)
 
-    for league in leagues:
-        get_matches(league.code, request.data['date'], request.user.id)
+    # for league in leagues:
+    #     get_matches(league.code, request.data['date'])
 
     leagues = leagues.filter(Q(match__date=request.data['date'])).distinct()
     serializer = LeagueSerializer(leagues, many=True,
                                   context={"user": CustomUser.objects.get(id=request.user.id),
                                            "date": request.data['date']})
+
+    # calculate score
+    data = {
+        'user': request.user.id,
+        'date': user_date
+    }
+    thread = threading.Thread(target=calculate_score,
+                              args=[data])
+    thread.setDaemon(True)
+    thread.start()
     return Response(serializer.data)
 
 
@@ -314,7 +336,22 @@ def export(request):
 
 
 def job():
-    print("I'm working...")
+    print('started')
+    date = datetime.date.today()
+    # print(date)
+    # leagues = League.objects.filter(active=True)
+    checks_for_date = LeagueCheck.objects.filter(
+        league=OuterRef('pk'),
+        date_field=date
+    ).values('id')
+    leagues = League.objects.filter(~Exists(checks_for_date),
+                                    active=True)
+
+    # get_matches(18, request.data['date'], request.user.id)
+
+    for league in leagues:
+        get_matches(league.code, date)
+    print('finished')
 
 
 @api_view(['POST'])
@@ -324,4 +361,4 @@ def run_schedule(request):
 
     while True:
         schedule.run_pending()
-        time.sleep(1)
+        time.sleep(0)
