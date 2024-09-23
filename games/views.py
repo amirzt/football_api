@@ -29,7 +29,7 @@ def send_football_api(params):
         return teams_data
 
     except requests.RequestException as e:
-        return {}
+        send_football_api(params)
 
 
 def get_status(param):
