@@ -336,8 +336,6 @@ def export(request):
 
 
 def job():
-    api_key = FootballApiKey(token='test')
-    api_key.save()
 
     print('started')
     date = datetime.date.today()
