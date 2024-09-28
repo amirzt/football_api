@@ -23,7 +23,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'users',
     'games',
-    'shop'
+    'shop',
+    'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -105,3 +106,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAdminUser'
     ),
 }
+
+CRONJOBS = [
+    ('*/2 * * * *', 'football.games.views.job'),
+]
