@@ -108,5 +108,5 @@ REST_FRAMEWORK = {
 }
 
 CRONJOBS = [
-    ('*/2 * * * *', 'football.games.views.job'),
+    ('*/1 * * * *', 'games.views.job'),
 ]
