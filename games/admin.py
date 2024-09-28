@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from games.models import League, Team, Match, Bet, RankingGroup, FootballApiKey, LeagueCheck
+from games.models import League, Team, Match, Bet, RankingGroup, FootballApiKey, LeagueCheck, APILog
 
 
 @admin.register(League)
@@ -45,3 +45,4 @@ class BetAdmin(admin.ModelAdmin):
 
 admin.site.register(FootballApiKey)
 admin.site.register(LeagueCheck)
+admin.site.register(APILog)

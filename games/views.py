@@ -8,7 +8,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey, LeagueCheck, DateChecked
+from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey, LeagueCheck, DateChecked, \
+    APILog
 from games.serializers import LeagueSerializer, AddBetSerializer, GroupSerializer
 from games.utils import calculate_score
 from users.models import CustomUser
@@ -336,6 +337,9 @@ def export(request):
 
 
 def job():
+
+    log = APILog()
+    log.save()
 
     print('started')
     date = datetime.date.today()
