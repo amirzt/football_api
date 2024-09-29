@@ -359,3 +359,28 @@ def add_bazar_myket_membership(request):
         return Response(status=status.HTTP_200_OK)
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_bazar_myket_chance(request):
+    plan = Plan.objects.get(bazar_myket='lottery')
+    serializer = AddTransactionSerializer(data=request.data,
+                                          context={'user': request.user,
+                                                   'plan': plan.id,
+                                                   'price': plan.price,
+                                                   'gateway': request.data['gateway'],
+                                                   'gateway_code': request.data['gateway_code'],
+                                                   'description': 'خرید گردونه شانس'})
+    if serializer.is_valid():
+        transaction = serializer.save()
+        transaction.state = 'success'
+        transaction.save()
+
+        lottery_chance = LotteryChance(user_id=request.user.id,
+                                       state=LotteryChance.StateChoices.SUCCESS)
+        lottery_chance.save()
+
+        return Response(status=status.HTTP_200_OK)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -16,5 +16,6 @@ urlpatterns = [
     path('use_chance/', views.use_chance),
 
     path('add_bazar_myket_membership/', views.add_bazar_myket_membership),
+    path('add_bazar_myket_chance/', views.add_bazar_myket_chance),
 
 ]
