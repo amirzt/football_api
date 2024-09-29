@@ -15,4 +15,6 @@ urlpatterns = [
     path('lottery_verify/', views.lottery_verify),
     path('use_chance/', views.use_chance),
 
+    path('add_bazar_myket_membership/', views.add_bazar_myket_membership),
+
 ]

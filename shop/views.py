@@ -331,3 +331,31 @@ def use_chance(request):
     user.score = user.score + int(lottery_chance.result)
     user.save()
     return Response(status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_bazar_myket_membership(request):
+    plan = Plan.objects.get(id=request.data['plan'])
+
+    serializer = AddTransactionSerializer(data=request.data,
+                                          context={'user': request.user,
+                                                   'plan': plan.id,
+                                                   'price': plan.price,
+                                                   'gateway': request.data['gateway'],
+                                                   'gateway_code': request.data['gateway_code'],
+                                                   'description': 'خرید اشتراک ' + plan.title})
+    if serializer.is_valid():
+        transaction = serializer.save()
+        transaction.state = 'success'
+        transaction.save()
+
+        user = CustomUser.objects.get(id=request.user.id)
+        if user.expire_date < timezone.now():
+            user.expire_date = timezone.now() + datetime.timedelta(days=int(plan.duration))
+        else:
+            user.expire_date += datetime.timedelta(days=int(plan.duration))
+        user.save()
+        return Response(status=status.HTTP_200_OK)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)

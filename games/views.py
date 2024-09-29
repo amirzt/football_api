@@ -337,11 +337,11 @@ def export(request):
 
 
 def job():
+    #
+    # log = APILog()
+    # log.save()
 
-    log = APILog()
-    log.save()
-
-    print('started')
+    # print('started')
     date = datetime.date.today()
     # print(date)
     # leagues = League.objects.filter(active=True)
@@ -356,7 +356,7 @@ def job():
 
     for league in leagues:
         get_matches(league.code, date)
-    print('finished')
+    # print('finished')
 
 
 @api_view(['POST'])
