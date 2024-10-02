@@ -344,13 +344,13 @@ def job():
     # print('started')
     date = datetime.date.today()
     # print(date)
-    # leagues = League.objects.filter(active=True)
-    checks_for_date = LeagueCheck.objects.filter(
-        league=OuterRef('pk'),
-        date_field=date
-    ).values('id')
-    leagues = League.objects.filter(~Exists(checks_for_date),
-                                    active=True)
+    leagues = League.objects.filter(active=True)
+    # checks_for_date = LeagueCheck.objects.filter(
+    #     league=OuterRef('pk'),
+    #     date_field=date
+    # ).values('id')
+    # leagues = League.objects.filter(~Exists(checks_for_date),
+    #                                 active=True)
 
     # get_matches(18, request.data['date'], request.user.id)
 
@@ -362,7 +362,7 @@ def job():
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def run_schedule(request):
-    schedule.every(1).minutes.do(job)
+    schedule.every(2).minutes.do(job)
 
     while True:
         schedule.run_pending()
