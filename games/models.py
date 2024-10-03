@@ -17,10 +17,10 @@ class League(models.Model):
         return self.name
 
 
-class LeagueCheck(models.Model):
-    league = models.ForeignKey(League, on_delete=models.CASCADE)
-    date_field = models.DateField(null=True, default=None)
-    created_date = models.DateField(auto_now_add=True)
+# class LeagueCheck(models.Model):
+#     league = models.ForeignKey(League, on_delete=models.CASCADE)
+#     date_field = models.DateField(null=True, default=None)
+#     created_date = models.DateField(auto_now_add=True)
 
 
 class Team(models.Model):

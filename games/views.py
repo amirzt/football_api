@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey, LeagueCheck, DateChecked, \
+from games.models import League, RankingGroup, GroupMember, Team, Match, FootballApiKey, DateChecked, \
     APILog
 from games.serializers import LeagueSerializer, AddBetSerializer, GroupSerializer
 from games.utils import calculate_score
@@ -98,9 +98,10 @@ def get_matches(league, date):
                     message = 'Fail'
 
     elif data['error'] == 404:
-        league_check = LeagueCheck(league=League.objects.get(code=league),
-                                   date_field=date)
-        league_check.save()
+        pass
+        # league_check = LeagueCheck(league=League.objects.get(code=league),
+        #                            date_field=date)
+        # league_check.save()
 
     return Response(data={"message": message})
 
@@ -119,13 +120,13 @@ def get_league(request):
     if user_date != today:
         check_date = DateChecked.objects.filter(date=user_date)
         if check_date.count() == 0:
-            checks_for_date = LeagueCheck.objects.filter(
-                league=OuterRef('pk'),
-                date_field=request.data['date']
-            ).values('id')
-            # leagues = League.objects.filter(active=True)
-            leagues = League.objects.filter(~Exists(checks_for_date),
-                                            active=True)
+            # checks_for_date = LeagueCheck.objects.filter(
+            #     league=OuterRef('pk'),
+            #     date_field=request.data['date']
+            # ).values('id')
+            leagues = League.objects.filter(active=True)
+            # leagues = League.objects.filter(~Exists(checks_for_date),
+            #                                 active=True)
 
             # get_matches(18, request.data['date'], request.user.id)
 

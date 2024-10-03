@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from games.models import League, Team, Bet, Match, FavouriteLeague, RankingGroup
-from users.models import CustomUser
 
 
 class TeamSerializer(serializers.ModelSerializer):
