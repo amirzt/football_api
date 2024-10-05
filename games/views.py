@@ -21,6 +21,13 @@ import time
 football_api_url = "https://apiv3.apifootball.com/"
 
 
+def get_data(params):
+    for league in params['leagues']:
+        get_matches(league.code, params['user_date'])
+    cd = DateChecked(date=params['user_date'])
+    cd.save()
+
+
 def send_football_api(params):
     try:
         response = requests.get(football_api_url, params=params)
@@ -130,10 +137,19 @@ def get_league(request):
 
             # get_matches(18, request.data['date'], request.user.id)
 
-            for league in leagues:
-                get_matches(league.code, user_date)
-            cd = DateChecked(date=user_date)
-            cd.save()
+            # for league in leagues:
+            #     get_matches(league.code, user_date)
+            # cd = DateChecked(date=user_date)
+            # cd.save()
+
+            data = {
+                'user_date': user_date,
+                'leagues': leagues
+            }
+            thread = threading.Thread(target=get_data,
+                                      args=[data])
+            thread.setDaemon(True)
+            thread.start()
 
     leagues = League.objects.filter(active=True)
 
